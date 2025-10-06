@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenMart - Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS for enhanced styling */
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-section {
+            transition: all 0.3s ease;
+        }
+
+        .filter-option:hover {
+            background-color: #f3f4f6;
+        }
+
+        .price-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #d1d5db;
+            outline: none;
+        }
+
+        .price-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+        }
+
+        .price-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: none;
+        }
+
+        .sort-dropdown {
+            transition: all 0.3s ease;
+        }
+
+        .sort-option:hover {
+            background-color: #f3f4f6;
+        }
+
+        .active-filter {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .view-toggle button.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .cart-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .cart-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Enhanced Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <h1 class="text-2xl font-bold text-blue-600 flex items-center">
+                    <i class="fas fa-shopping-bag mr-2"></i>GenMart
+                </h1>
+                <div class="ml-10 hidden md:block">
+                    <ul class="flex gap-6 text-gray-700 font-semibold">
+                        <li><a href="index.html" class="hover:text-blue-600 transition-colors">Home</a></li>
+                        <li><a href="products.html" class="text-blue-600 border-b-2 border-blue-600 pb-1">Products</a>
+                        </li>
+                        <li><a href="Categories .html" class="hover:text-blue-600 transition-colors">Categories</a></li>
+
+                        <li><a href="cart.html" class="hover:text-blue-600 transition-colors">Cart</a></li>
+                        <li><a href="contact.html" class="hover:text-blue-600 transition-colors">Contact</a></li>
+                        <li><a href="product-details.html"
+                                class="hover:text-blue-600 transition-colors">product-details</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block relative">
+                    <input type="text" placeholder="Search products..."
+                        class="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <a href="login.html"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Login</a>
+                    <a href="register.html"
+                        class="bg-white text-blue-600 border border-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">Register</a>
+                </div>
+                <button class="md:hidden text-gray-700">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb Navigation -->
+    <div class="container mx-auto px-4 py-4">
+        <nav class="flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="index.html"
+                        class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-home mr-2"></i>
+                        Home
+                    </a>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                        <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">Products</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-6">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">All Products</h1>
+                <p class="text-gray-600 mt-1">Discover our wide range of quality products</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center space-x-4">
+                <!-- Search Bar -->
+                <div class="relative">
+                    <input type="text" placeholder="Search products..."
+                        class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+
+                <!-- Sort Dropdown -->
+                <div class="relative">
+                    <button id="sort-button"
+                        class="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-50">
+                        <span>Sort by: Featured</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="sort-dropdown"
+                        class="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg py-1 z-10 hidden">
+                        <button class="sort-option w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            data-sort="featured">Featured</button>
+                        <button class="sort-option w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            data-sort="price-low">Price: Low to High</button>
+                        <button class="sort-option w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            data-sort="price-high">Price: High to Low</button>
+                        <button class="sort-option w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            data-sort="rating">Highest Rated</button>
+                        <button class="sort-option w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            data-sort="newest">Newest First</button>
+                    </div>
+                </div>
+
+                <!-- View Toggle -->
+                <div class="view-toggle flex border border-gray-300 rounded-lg overflow-hidden">
+                    <button class="p-2 bg-white text-gray-700 active" data-view="grid">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="p-2 bg-white text-gray-700" data-view="list">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Enhanced Sidebar Filters -->
+            <aside class="w-full md:w-1/4 bg-white p-6 rounded-lg shadow-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Filters</h2>
+                    <button id="clear-filters" class="text-sm text-blue-600 hover:text-blue-800">Clear All</button>
+                </div>
+
+                <!-- Search within filters -->
+                <div class="mb-6">
+                    <input type="text" placeholder="Search in filters..."
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+
+                <!-- Category Filter -->
+                <div class="filter-section mb-6">
+                    <h3 class="font-semibold mb-3 flex justify-between items-center">
+                        <span>Category</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </h3>
+                    <div class="space-y-2">
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="category-filter mr-3 rounded text-blue-600"
+                                value="Electronics">
+                            <span class="text-gray-700">Electronics</span>
+                            <span class="ml-auto text-gray-500 text-sm">(128)</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="category-filter mr-3 rounded text-blue-600" value="Fashion">
+                            <span class="text-gray-700">Fashion</span>
+                            <span class="ml-auto text-gray-500 text-sm">(96)</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="category-filter mr-3 rounded text-blue-600"
+                                value="Home & Kitchen">
+                            <span class="text-gray-700">Home & Kitchen</span>
+                            <span class="ml-auto text-gray-500 text-sm">(74)</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="category-filter mr-3 rounded text-blue-600"
+                                value="Sports & Outdoors">
+                            <span class="text-gray-700">Sports & Outdoors</span>
+                            <span class="ml-auto text-gray-500 text-sm">(52)</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="category-filter mr-3 rounded text-blue-600"
+                                value="Beauty & Personal Care">
+                            <span class="text-gray-700">Beauty & Personal Care</span>
+                            <span class="ml-auto text-gray-500 text-sm">(43)</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="category-filter mr-3 rounded text-blue-600"
+                                value="Toys & Games">
+                            <span class="text-gray-700">Toys & Games</span>
+                            <span class="ml-auto text-gray-500 text-sm">(38)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Price Filter -->
+                <div class="filter-section mb-6">
+                    <h3 class="font-semibold mb-3">Price Range</h3>
+                    <div class="mb-4">
+                        <input type="range" min="0" max="1000" value="500" class="price-slider w-full" id="price-range">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm text-gray-700">$0</div>
+                        <div class="text-sm font-medium text-blue-600">$0 - $500</div>
+                        <div class="text-sm text-gray-700">$1000</div>
+                    </div>
+                </div>
+
+                <!-- Brand Filter -->
+                <div class="filter-section mb-6">
+                    <h3 class="font-semibold mb-3">Brand</h3>
+                    <div class="space-y-2">
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="brand-filter mr-3 rounded text-blue-600" value="Samsung">
+                            <span class="text-gray-700">Samsung</span>
+                            <span class="ml-auto text-gray-500 text-sm">(42)</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="brand-filter mr-3 rounded text-blue-600" value="Apple">
+                            <span class="text-gray-700">Apple</span>
+                            <span class="ml-auto text-gray-500 text-sm">(38)</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="brand-filter mr-3 rounded text-blue-600" value="Sony">
+                            <span class="text-gray-700">Sony</span>
+                            <span class="ml-auto text-gray-500 text-sm">(26)</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="brand-filter mr-3 rounded text-blue-600" value="Nike">
+                            <span class="text-gray-700">Nike</span>
+                            <span class="ml-auto text-gray-500 text-sm">(31)</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="checkbox" class="brand-filter mr-3 rounded text-blue-600" value="Adidas">
+                            <span class="text-gray-700">Adidas</span>
+                            <span class="ml-auto text-gray-500 text-sm">(28)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Rating Filter -->
+                <div class="filter-section mb-6">
+                    <h3 class="font-semibold mb-3">Customer Rating</h3>
+                    <div class="space-y-2">
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="radio" name="rating" class="rating-filter mr-3" value="4">
+                            <div class="flex text-yellow-400 mr-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-700">& Up</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="radio" name="rating" class="rating-filter mr-3" value="3">
+                            <div class="flex text-yellow-400 mr-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span class="text-gray-700">& Up</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="radio" name="rating" class="rating-filter mr-3" value="2">
+                            <div class="flex text-yellow-400 mr-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span class="text-gray-700">& Up</span>
+                        </label>
+                        <label class="filter-option flex items-center p-2 rounded-lg cursor-pointer">
+                            <input type="radio" name="rating" class="rating-filter mr-3" value="1">
+                            <div class="flex text-yellow-400 mr-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span class="text-gray-700">& Up</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center">
+                    <i class="fas fa-filter mr-2"></i> Apply Filters
+                </button>
+            </aside>
+
+            <!-- Product Grid/List -->
+            <main class="w-full md:w-3/4">
+                <!-- Active Filters -->
+                <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-gray-700 mr-2">Active filters:</span>
+                        <span class="active-filter flex items-center px-3 py-1 rounded-full text-sm">
+                            Electronics <button class="ml-2 text-gray-500 hover:text-gray-700"><i
+                                    class="fas fa-times"></i></button>
+                        </span>
+                        <span class="active-filter flex items-center px-3 py-1 rounded-full text-sm">
+                            $0 - $500 <button class="ml-2 text-gray-500 hover:text-gray-700"><i
+                                    class="fas fa-times"></i></button>
+                        </span>
+                        <span class="active-filter flex items-center px-3 py-1 rounded-full text-sm">
+                            Samsung <button class="ml-2 text-gray-500 hover:text-gray-700"><i
+                                    class="fas fa-times"></i></button>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Results Info -->
+                <div class="flex justify-between items-center mb-6">
+                    <p class="text-gray-600">Showing <span class="font-semibold">1-16</span> of <span
+                            class="font-semibold">128</span> products</p>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-gray-600">Products per page:</span>
+                        <select
+                            class="border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option>12</option>
+                            <option>24</option>
+                            <option>48</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Product Grid View -->
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Product 1 -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Premium Smartphone" class="w-full h-48 object-cover">
+                            <span
+                                class="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">Sale</span>
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Premium Smartphone X9 Pro</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.5)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$599.99</span>
+                                    <span class="text-sm text-gray-500 line-through ml-2">$699.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="1" data-name="Premium Smartphone X9 Pro" data-price="599.99"
+                                    data-image="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 2 -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Running Shoes" class="w-full h-48 object-cover">
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Sports Running Shoes</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.0)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$89.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="2" data-name="Sports Running Shoes" data-price="89.99"
+                                    data-image="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 3 -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Headphones" class="w-full h-48 object-cover">
+                            <span
+                                class="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">New</span>
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Wireless Headphones</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(5.0)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$129.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="3" data-name="Wireless Headphones" data-price="129.99"
+                                    data-image="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 4 -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1099&q=80"
+                                alt="Smart Watch" class="w-full h-48 object-cover">
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Smart Watch Series 5</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.5)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$199.99</span>
+                                    <span class="text-sm text-gray-500 line-through ml-2">$249.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="4" data-name="Smart Watch Series 5" data-price="199.99"
+                                    data-image="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1099&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 5 -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80"
+                                alt="Smartwatch" class="w-full h-48 object-cover">
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Fitness Tracker Watch</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.0)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$79.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="5" data-name="Fitness Tracker Watch" data-price="79.99"
+                                    data-image="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 6 -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Camera" class="w-full h-48 object-cover">
+                            <span
+                                class="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">Sale</span>
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Digital Camera Pro</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(5.0)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$449.99</span>
+                                    <span class="text-sm text-gray-500 line-through ml-2">$499.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="6" data-name="Digital Camera Pro" data-price="449.99"
+                                    data-image="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 7 - Laptop -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1142&q=80"
+                                alt="Gaming Laptop" class="w-full h-48 object-cover">
+                            <span
+                                class="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">Hot
+                                Deal</span>
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Gaming Laptop Pro</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.7)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$1,299.99</span>
+                                    <span class="text-sm text-gray-500 line-through ml-2">$1,499.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="7" data-name="Gaming Laptop Pro" data-price="1299.99"
+                                    data-image="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1142&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 8 - Tablet -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Tablet" class="w-full h-48 object-cover">
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">10.5" Tablet Pro</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.2)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$449.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="8" data-name="10.5\" Tablet Pro" data-price="449.99"
+                                    data-image="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 9 - Smart TV -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Smart TV" class="w-full h-48 object-cover">
+                            <span
+                                class="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">New</span>
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">55" 4K Smart TV</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.9)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$699.99</span>
+                                    <span class="text-sm text-gray-500 line-through ml-2">$799.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="9" data-name="55\" 4K Smart TV" data-price="699.99"
+                                    data-image="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 10 - Gaming Console -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Gaming Console" class="w-full h-48 object-cover">
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Next-Gen Gaming Console</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.6)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$499.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="10" data-name="Next-Gen Gaming Console" data-price="499.99"
+                                    data-image="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 11 - Bluetooth Speaker -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1331&q=80"
+                                alt="Bluetooth Speaker" class="w-full h-48 object-cover">
+                            <span
+                                class="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">-25%</span>
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Portable Bluetooth Speaker</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.3)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$89.99</span>
+                                    <span class="text-sm text-gray-500 line-through ml-2">$119.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="11" data-name="Portable Bluetooth Speaker" data-price="89.99"
+                                    data-image="https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1331&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 12 - Drone -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Drone" class="w-full h-48 object-cover">
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">4K Camera Drone Pro</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.5)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$799.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="12" data-name="4K Camera Drone Pro" data-price="799.99"
+                                    data-image="https://images.unsplash.com/photo-1473968512647-3e447244af8f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 13 - Smart Home Hub -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1558089687-b785ad8f6e5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Smart Home Hub" class="w-full h-48 object-cover">
+                            <span
+                                class="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">New</span>
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Smart Home Hub</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.1)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$129.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="13" data-name="Smart Home Hub" data-price="129.99"
+                                    data-image="https://images.unsplash.com/photo-1558089687-b785ad8f6e5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 14 - Wireless Earbuds -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1590658165737-15a047b8b5e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Wireless Earbuds" class="w-full h-48 object-cover">
+                            <span
+                                class="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">Sale</span>
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">True Wireless Earbuds</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.8)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$149.99</span>
+                                    <span class="text-sm text-gray-500 line-through ml-2">$179.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="14" data-name="True Wireless Earbuds" data-price="149.99"
+                                    data-image="https://images.unsplash.com/photo-1590658165737-15a047b8b5e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 15 - External SSD -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1592892201321-7b8f7cf8f6db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="External SSD" class="w-full h-48 object-cover">
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">1TB External SSD</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.5)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$129.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="15" data-name="1TB External SSD" data-price="129.99"
+                                    data-image="https://images.unsplash.com/photo-1592892201321-7b8f7cf8f6db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product 16 - VR Headset -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1178&q=80"
+                                alt="VR Headset" class="w-full h-48 object-cover">
+                            <span
+                                class="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">New</span>
+                            <button
+                                class="absolute top-2 left-2 bg-white text-gray-700 p-2 rounded-full shadow-md hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-1">Virtual Reality Headset</h3>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 text-sm ml-2">(4.0)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-lg font-bold text-gray-900">$399.99</span>
+                                </div>
+                                <button
+                                    class="add-to-cart bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                    data-id="16" data-name="Virtual Reality Headset" data-price="399.99"
+                                    data-image="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1178&q=80">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product List View (Hidden by default) -->
+                <div id="product-list" class="hidden space-y-6">
+                    <!-- Product 1 in List View -->
+                    <div class="product-card bg-white rounded-lg shadow-md overflow-hidden flex">
+                        <div class="w-1/4">
+                            <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                                alt="Premium Smartphone" class="w-full h-full object-cover">
+                        </div>
+                        <div class="w-3/4 p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-xl">Premium Smartphone X9 Pro</h3>
+                                    <button class="text-gray-400 hover:text-red-500">
+                                        <i class="far fa-heart text-xl"></i>
+                                    </button>
+                                </div>
+                                <div class="flex items-center mb-3">
+                                    <div class="flex text-yellow-400 mr-2">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-gray-600">(4.5) • 128 Reviews</span>
+                                </div>
+                                <p class="text-gray-700 mb-4">
+                                    The latest flagship smartphone with cutting-edge technology, stunning display, and
+                                    powerful performance.
+                                </p>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-2xl font-bold text-gray-900">$599.99</span>
+                                    <span class="text-lg text-gray-500 line-through ml-2">$699.99</span>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button
+                                        class="add-to-cart bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                        data-id="1" data-name="Premium Smartphone X9 Pro" data-price="599.99"
+                                        data-image="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80">
+                                        Add to Cart
+                                    </button>
+                                    <button
+                                        class="bg-white text-blue-600 border border-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- More list view products would go here -->
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex justify-center mt-10">
+                    <nav class="flex items-center space-x-2">
+                        <button class="px-3 py-2 rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold">1</button>
+                        <button
+                            class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">2</button>
+                        <button
+                            class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">3</button>
+                        <span class="px-2 text-gray-500">...</span>
+                        <button
+                            class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">8</button>
+                        <button class="px-3 py-2 rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </nav>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Cart Notification -->
+    <div id="cart-notification" class="cart-notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Product added to cart!</span>
+    </div>
+
+    <!-- Enhanced Footer -->
+    <footer class="bg-gray-800 text-white py-10 mt-10">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-shopping-bag mr-2"></i>GenMart
+                    </h3>
+                    <p class="text-gray-400 mb-4">Your one-stop destination for all your shopping needs. Quality
+                        products at affordable prices.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="products.html"
+                                class="text-gray-400 hover:text-white transition-colors">Products</a></li>
+                        <li><a href="categories.html"
+                                class="text-gray-400 hover:text-white transition-colors">Categories</a></li>
+                        <li><a href="deals.html" class="text-gray-400 hover:text-white transition-colors">Today's
+                                Deals</a></li>
+                        <li><a href="about.html" class="text-gray-400 hover:text-white transition-colors">About Us</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Customer Service -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Customer Service</h3>
+                    <ul class="space-y-2">
+                        <li><a href="contact.html" class="text-gray-400 hover:text-white transition-colors">Contact
+                                Us</a></li>
+                        <li><a href="faq.html" class="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="shipping.html" class="text-gray-400 hover:text-white transition-colors">Shipping
+                                Policy</a></li>
+                        <li><a href="returns.html" class="text-gray-400 hover:text-white transition-colors">Returns &
+                                Refunds</a></li>
+                        <li><a href="privacy.html" class="text-gray-400 hover:text-white transition-colors">Privacy
+                                Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-3 text-blue-500"></i>
+                            <span>123 Commerce Street, City, Country</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-3 text-blue-500"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-blue-500"></i>
+                            <span>support@genmart.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>© 2025 GenMart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        class Cart {
+            constructor() {
+                this.items = this.loadCartFromStorage();
+            }
+
+            // Load cart from localStorage
+            loadCartFromStorage() {
+                const cartData = localStorage.getItem('genmart-cart');
+                return cartData ? JSON.parse(cartData) : [];
+            }
+
+            // Save cart to localStorage
+            saveCartToStorage() {
+                localStorage.setItem('genmart-cart', JSON.stringify(this.items));
+            }
+
+            // Add item to cart
+            addItem(product) {
+                // Check if product already exists in cart
+                const existingItemIndex = this.items.findIndex(item => item.id === product.id);
+
+                if (existingItemIndex !== -1) {
+                    // If exists, increase quantity
+                    this.items[existingItemIndex].quantity += 1;
+                } else {
+                    // If not exists, add new item with quantity 1
+                    this.items.push({
+                        ...product,
+                        quantity: 1
+                    });
+                }
+
+                this.saveCartToStorage();
+                this.updateCartCount();
+                return true;
+            }
+
+            // Remove item from cart
+            removeItem(productId) {
+                this.items = this.items.filter(item => item.id !== productId);
+                this.saveCartToStorage();
+                this.updateCartCount();
+            }
+
+            // Update item quantity
+            updateQuantity(productId, quantity) {
+                const item = this.items.find(item => item.id === productId);
+                if (item) {
+                    item.quantity = quantity;
+                    if (item.quantity <= 0) {
+                        this.removeItem(productId);
+                    } else {
+                        this.saveCartToStorage();
+                    }
+                    this.updateCartCount();
+                }
+            }
+
+            // Get cart items
+            getItems() {
+                return this.items;
+            }
+
+            // Get total items count
+            getTotalItems() {
+                return this.items.reduce((total, item) => total + item.quantity, 0);
+            }
+
+            // Get total price
+            getTotalPrice() {
+                return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+            }
+
+            // Clear cart
+            clearCart() {
+                this.items = [];
+                this.saveCartToStorage();
+                this.updateCartCount();
+            }
+
+            // Update cart count in navbar
+            updateCartCount() {
+                const cartCount = this.getTotalItems();
+                // You can update a cart badge here if you have one
+                console.log(`Cart updated: ${cartCount} items`);
+            }
+        }
+
+        // Initialize cart
+        const cart = new Cart();
+
+        // Add to cart functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const addToCartButtons = document.querySelectorAll('.add-to-cart');
+            const cartNotification = document.getElementById('cart-notification');
+            const notificationText = document.getElementById('notification-text');
+
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const productId = this.getAttribute('data-id');
+                    const productName = this.getAttribute('data-name');
+                    const productPrice = parseFloat(this.getAttribute('data-price'));
+                    const productImage = this.getAttribute('data-image');
+
+                    const product = {
+                        id: productId,
+                        name: productName,
+                        price: productPrice,
+                        image: productImage
+                    };
+
+                    // Add to cart
+                    cart.addItem(product);
+
+                    // Show notification
+                    notificationText.textContent = `${productName} added to cart!`;
+                    cartNotification.classList.add('show');
+
+                    // Hide notification after 3 seconds
+                    setTimeout(() => {
+                        cartNotification.classList.remove('show');
+                    }, 3000);
+
+                    // Optional: Add animation to button
+                    this.innerHTML = '<i class="fas fa-check"></i>';
+                    this.classList.remove('bg-blue-600');
+                    this.classList.add('bg-green-500');
+
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-shopping-cart"></i>';
+                        this.classList.remove('bg-green-500');
+                        this.classList.add('bg-blue-600');
+                    }, 1000);
+                });
+            });
+        });
+
+        // Sort Dropdown Toggle
+        const sortButton = document.getElementById('sort-button');
+        const sortDropdown = document.getElementById('sort-dropdown');
+
+        sortButton.addEventListener('click', () => {
+            sortDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!sortButton.contains(event.target) && !sortDropdown.contains(event.target)) {
+                sortDropdown.classList.add('hidden');
+            }
+        });
+
+        // Sort Option Selection
+        const sortOptions = document.querySelectorAll('.sort-option');
+        sortOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const sortValue = option.getAttribute('data-sort');
+                let sortText = 'Featured';
+
+                switch (sortValue) {
+                    case 'price-low':
+                        sortText = 'Price: Low to High';
+                        break;
+                    case 'price-high':
+                        sortText = 'Price: High to Low';
+                        break;
+                    case 'rating':
+                        sortText = 'Highest Rated';
+                        break;
+                    case 'newest':
+                        sortText = 'Newest First';
+                        break;
+                }
+
+                sortButton.querySelector('span').textContent = `Sort by: ${sortText}`;
+                sortDropdown.classList.add('hidden');
+
+                // In a real app, you would trigger a product re-sort here
+                console.log(`Sorting by: ${sortValue}`);
+            });
+        });
+
+        // View Toggle (Grid/List)
+        const viewToggleButtons = document.querySelectorAll('.view-toggle button');
+        const productGrid = document.getElementById('product-grid');
+        const productList = document.getElementById('product-list');
+
+        viewToggleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const view = button.getAttribute('data-view');
+
+                // Update active button
+                viewToggleButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.classList.remove('bg-blue-600');
+                    btn.classList.remove('text-white');
+                });
+                button.classList.add('active');
+                button.classList.add('bg-blue-600');
+                button.classList.add('text-white');
+
+                // Show appropriate view
+                if (view === 'grid') {
+                    productGrid.classList.remove('hidden');
+                    productList.classList.add('hidden');
+                } else {
+                    productGrid.classList.add('hidden');
+                    productList.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Price Range Slider
+        const priceSlider = document.getElementById('price-range');
+        const priceDisplay = document.querySelector('.text-blue-600');
+
+        priceSlider.addEventListener('input', () => {
+            const minPrice = 0;
+            const maxPrice = 1000;
+            const currentValue = priceSlider.value;
+
+            priceDisplay.textContent = `$${minPrice} - $${currentValue}`;
+        });
+
+        // Clear Filters
+        const clearFiltersButton = document.getElementById('clear-filters');
+        clearFiltersButton.addEventListener('click', () => {
+            // Clear all checkboxes
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // Clear radio buttons
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => {
+                radio.checked = false;
+            });
+
+            // Reset price slider
+            priceSlider.value = 500;
+            priceDisplay.textContent = '$0 - $500';
+
+            // In a real app, you would reset the product filtering here
+            console.log('Filters cleared');
+        });
+
+        // Wishlist Toggle
+        const wishlistButtons = document.querySelectorAll('.fa-heart');
+        wishlistButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (button.classList.contains('far')) {
+                    button.classList.remove('far');
+                    button.classList.add('fas', 'text-red-500');
+                } else {
+                    button.classList.remove('fas', 'text-red-500');
+                    button.classList.add('far');
+                }
+            });
+        });
+
+        // Filter Section Toggle (for mobile)
+        const filterSections = document.querySelectorAll('.filter-section h3');
+        filterSections.forEach(section => {
+            section.addEventListener('click', () => {
+                // In a real app, you would toggle the visibility of filter options
+                // For this example, we'll just log the action
+                console.log('Filter section toggled');
+            });
+        });
+    </script>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/products.js"></script>
+</body>
+
+</html>
